@@ -276,9 +276,7 @@ const DATA = {
       ["10","fotokopi SIM","",""],
       ["11","fotokopi Piagam penghargaan","",""],
       ["12","fotokopi Surat / piagam keahlian khusus","","jika ada"],
-      ["13","Scan Pdf seluruh berkas dalam flash disk","",""],
-      ["14","berkas hard copy 1 rangkap dengan map warna merah ","",""],
-      ["15","Pas foto 4x6 background kuning","","10 lembar"],
+      ["13","Pas foto 4x6 background kuning","","10 lembar"],
     ]
   }
 };
@@ -381,6 +379,8 @@ function drawSection(doc, key){
   const bulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
   const tgl = "Semarang, " + today.getDate() + " " + bulan[today.getMonth()] + " " + today.getFullYear();
 
+  doc.text("seluruh personel membawa administrasi dalam bentuk softcopy scan berwarna format pdf size 512kb dan di jadikan satu kedalam falshdisk serta diberikan nama file sesuai ceklis diatas,", M, fy);
+  doc.text("berkas fotokopi dimasukan dalam map warna merah sebanyak 2 rangkap,", M, fy);
   doc.setFont('helvetica','normal');
   doc.setFontSize(10.5);
   // left: yang bersangkutan
