@@ -260,7 +260,12 @@ const DATA = {
   berkas: {
     title: "CHECKLIST BERKAS ADMINISTRASI",
     file: "Checklist_Berkas_Administrasi",
+    notes: [
+      "Seluruh personel membawa administrasi dalam bentuk softcopy hasil scan berwarna format PDF ukuran maksimal 512 KB, dijadikan satu ke dalam flashdisk, serta diberi nama file sesuai checklist di atas.",
+      "Berkas fotokopi dimasukkan dalam map warna merah sebanyak 2 (dua) rangkap."
+    ],
     head: [["NO", "URAIAN BERKAS", "ADA", "KETERANGAN"]],
+    // ... sisanya tetap
     checkCol: 2,
     colStyles: { 0:{cellWidth:12,halign:'center'}, 2:{cellWidth:16,halign:'center'}, 3:{cellWidth:42} },
     rows: [
@@ -370,19 +375,36 @@ function drawSection(doc, key){
     }
   });
 
-  // ---------- SIGNATURE ----------
-  let fy = doc.lastAutoTable.finalY + 12;
+  // ---------- CATATAN / NOTE (tepat di bawah tabel) ----------
+  let ny = doc.lastAutoTable.finalY + 8;
   const pageH = doc.internal.pageSize.getHeight();
+  if (ny > pageH - 70){ doc.addPage(); ny = 24; }
+
+  if (cfg.notes && cfg.notes.length){
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(10);
+    doc.text("Catatan:", M, ny);
+    ny += 5.5;
+
+    doc.setFont('helvetica','normal');
+    const usableW = pageW - 2*M - 6;   // sisakan ruang untuk nomor
+    cfg.notes.forEach((n, i) => {
+      const prefix = (i + 1) + ". ";
+      const lines = doc.splitTextToSize(prefix + n, usableW);
+      doc.text(lines, M, ny);
+      ny += lines.length * 4.8 + 1.5;
+    });
+    ny += 4;
+  }
+
+  // ---------- SIGNATURE ----------
+  let fy = ny + 6;
   if (fy > pageH - 42){ doc.addPage(); fy = 24; }
   const rightX = pageW - M - 60;
   const today = new Date();
   const bulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
   const tgl = "Semarang, " + today.getDate() + " " + bulan[today.getMonth()] + " " + today.getFullYear();
 
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(10.5);
-  doc.text("seluruh personel membawa administrasi dalam bentuk softcopy scan berwarna format pdf size 512kb dan di jadikan satu kedalam falshdisk serta diberikan nama file sesuai ceklis diatas,", M, fy);
-  doc.text("berkas fotokopi dimasukan dalam map warna merah sebanyak 2 rangkap,", M, fy);
   doc.setFont('helvetica','normal');
   doc.setFontSize(10.5);
   // left: yang bersangkutan
@@ -392,7 +414,6 @@ function drawSection(doc, key){
   doc.text(tgl, rightX, fy - 6);
   doc.text("Petugas Pemeriksa,", rightX, fy);
   doc.text("(  ........................................  )", rightX, fy + 26);
-}
 
 function generate(which){
   const { jsPDF } = window.jspdf;
